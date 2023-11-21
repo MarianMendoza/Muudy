@@ -1,17 +1,46 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGroupBox, QCheckBox, QPushButton, QLabel,QWidgetItem, QLayoutItem
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGroupBox, QCheckBox, QPushButton, QLabel, QRadioButton, QFormLayout, QDialog, QWidgetItem, QLayoutItem
 
 
-'''
-Personality Set Up
-Change Window first, and create dictionary.
-
-'''
-class ActivityTracker(QWidget):
+class MoodSelectionDialog(QDialog):
     def __init__(self):
         super().__init__()
+        self.init_ui()
 
-        self.selected_activities = set()  # Using a set to avoid duplicates
+    def init_ui(self):
+        self.setWindowTitle('Select Your Mood')
+        self.setGeometry(600, 400, 600, 400)
+
+        self.mood_layout = QFormLayout()
+
+        self.mood_radio_buttons = [
+            QRadioButton('Happy'),
+            QRadioButton('Sad'),
+            QRadioButton('Neutral')
+        ]
+
+        for button in self.mood_radio_buttons:
+            self.mood_layout.addWidget(button)
+
+        self.ok_button = QPushButton('OK')
+        self.ok_button.clicked.connect(self.accept)
+
+        self.mood_layout.addWidget(self.ok_button)
+        self.setLayout(self.mood_layout)
+
+    def get_selected_mood(self):
+        for button in self.mood_radio_buttons:
+            if button.isChecked():
+                return button.text()
+        return None
+
+
+class ActivityTracker(QWidget):
+    def __init__(self, initial_mood):
+        super().__init__()
+
+        self.selected_activities = set()
+        self.mood = initial_mood
 
         self.init_ui()
 
@@ -93,31 +122,27 @@ class ActivityTracker(QWidget):
             self.selected_activities.discard(activity)
 
     def show_results_no_personality(self):
-    # Clear existing content
-            self.clear_layout(self.main_layout)
+        # Clear existing content
+        self.clear_layout(self.main_layout)
 
-            # Create new category group boxes based on selected activities
-            self.no_personality_result_label = QLabel('These are your results.')
-            self.main_layout.addWidget(self.no_personality_result_label)
+        # Create new category group boxes based on selected activities
+        self.no_personality_result_label = QLabel(f'Your mood is {self.mood}.\nThese are your results.')
+        self.main_layout.addWidget(self.no_personality_result_label)
 
-            self.no_personality_result_from_max = {
-                "Social": "You Might be a diplomat!",
-                "Hobbies": "You might be an explorer!",
-                "Organization": "You might be a sentinel!",
-                "Self-Care": "You might be an analyst!"
-            }
+        self.no_personality_result_from_max = {
+            "Social": "You Might be a diplomat!",
+            "Hobbies": "You might be an explorer!",
+            "Organizational": "You might be a sentinel!",
+            "Self-Care": "You might be an analyst!"
+        }
 
-            # Find the key with the maximum value in the dictionary
-            # print(self.point_dict)
-            self.max_key = max(self.point_dict, key=self.point_dict.get)
-            # print(self.max_key)
-            self.result_np = self.no_personality_result_from_max[self.max_key]
+        # Find the key with the maximum value in the dictionary
+        self.max_key = max(self.point_dict, key=self.point_dict.get)
+        self.result_np = self.no_personality_result_from_max[self.max_key]
 
-            # Display the result
-            self.max_points_result_label = QLabel(self.result_np)
-            self.main_layout.addWidget(self.max_points_result_label)
-            
-
+        # Display the result
+        self.max_points_result_label = QLabel(self.result_np)
+        self.main_layout.addWidget(self.max_points_result_label)
 
     def clear_layout(self, layout):
         for i in reversed(range(layout.count())):
@@ -134,8 +159,16 @@ class ActivityTracker(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    tracker = ActivityTracker()
-    tracker.show()
-    sys.exit(app.exec())
 
+    # Ask for mood first, 
+    mood_dialog = MoodSelectionDialog()
+    # Here we made it so that if my mood_dialog is executed to get selected mood.
+    if mood_dialog.exec() == True:
+        selected_mood = mood_dialog.get_selected_mood()
 
+        #Change window here.
+        # Open ActivityTracker window with the selected mood
+        tracker = ActivityTracker(selected_mood)
+        tracker.show()
+
+        sys.exit(app.exec())
