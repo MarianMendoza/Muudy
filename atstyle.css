@@ -1,0 +1,25 @@
+/* style.css */
+
+QDialog {
+    background-color: rgb(243, 187, 187);
+}
+
+QGroupBox {
+    border: 2px solid #4CAF50;
+    background-color: rgb(243, 187, 187);
+    border-radius: 5px;
+    margin-top: 1ex;
+}
+
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+QLabel {
+    font-size: 14px;
+}

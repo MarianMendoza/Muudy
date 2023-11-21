@@ -1,5 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGroupBox, QCheckBox, QPushButton, QLabel, QRadioButton, QFormLayout, QDialog, QWidgetItem, QLayoutItem
+from PyQt6.QtCore import QFile, QTextStream
+from PyQt6.QtGui import QFont
 
 
 class MoodSelectionDialog(QDialog):
@@ -159,6 +161,18 @@ class ActivityTracker(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    # Apply the style sheet
+    style_file = QFile('atstyle.css')
+    if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+        stream = QTextStream(style_file)
+        app.setStyleSheet(stream.readAll())
+        style_file.close()
+
+
+
+    font = QFont("Georgia", 12)  # Replace "Arial" with your desired font family and set the size
+    app.setFont(font)
+    
 
     # Ask for mood first, 
     mood_dialog = MoodSelectionDialog()
