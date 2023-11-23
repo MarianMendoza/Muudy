@@ -1,46 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGroupBox, QCheckBox, QPushButton, QLabel, QRadioButton, QFormLayout, QDialog, QWidgetItem, QLayoutItem
-
-
-class MoodSelectionDialog(QDialog):
-    def __init__(self):
-        super().__init__()
-        self.init_ui()
-
-    def init_ui(self):
-        self.setWindowTitle('Select Your Mood')
-        self.setGeometry(600, 400, 600, 400)
-
-        self.mood_layout = QFormLayout()
-
-        self.mood_radio_buttons = [
-            QRadioButton('Happy'),
-            QRadioButton('Sad'),
-            QRadioButton('Neutral')
-        ]
-
-        for button in self.mood_radio_buttons:
-            self.mood_layout.addWidget(button)
-
-        self.ok_button = QPushButton('OK')
-        self.ok_button.clicked.connect(self.accept)
-
-        self.mood_layout.addWidget(self.ok_button)
-        self.setLayout(self.mood_layout)
-
-    def get_selected_mood(self):
-        for button in self.mood_radio_buttons:
-            if button.isChecked():
-                return button.text()
-        return None
-
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGroupBox, QCheckBox, QPushButton, QLabel, QRadioButton, QFormLayout, QStackedWidget
 
 class ActivityTracker(QWidget):
-    def __init__(self, initial_mood):
+    def __init__(self):
         super().__init__()
 
         self.selected_activities = set()
-        self.mood = initial_mood
+        self.mood = None
 
         self.init_ui()
 
@@ -48,8 +14,26 @@ class ActivityTracker(QWidget):
         self.setWindowTitle('Activity Tracker')
         self.setGeometry(600, 400, 600, 400)
 
-        # Create main layout
-        self.main_layout = QVBoxLayout()
+        self.stacked_widget = QStackedWidget()
+
+        # Mood selection layout
+        mood_widget = QWidget()
+        self.mood_layout = QFormLayout(mood_widget)
+        self.mood_radio_buttons = [
+            QRadioButton('Happy'),
+            QRadioButton('Sad'),
+            QRadioButton('Neutral')
+        ]
+        for button in self.mood_radio_buttons:
+            self.mood_layout.addWidget(button)
+        self.ok_button = QPushButton('OK')
+        self.ok_button.clicked.connect(self.get_selected_mood)
+        self.mood_layout.addWidget(self.ok_button)
+        self.stacked_widget.addWidget(mood_widget)
+
+        # Activity tracker layout
+        self.activity_widget = QWidget()
+        self.activity_layout = QVBoxLayout(self.activity_widget)
 
         # Points
         self.social_points = 0
@@ -70,15 +54,24 @@ class ActivityTracker(QWidget):
         show_activities_button.clicked.connect(self.show_results_no_personality)
 
         # Add components to main layout
-        self.main_layout.addWidget(self.social_group_box)
-        self.main_layout.addWidget(self.hobbies_group_box)
-        self.main_layout.addWidget(self.organizational_group_box)
-        self.main_layout.addWidget(self.self_care_group_box)
+        self.activity_layout.addWidget(self.social_group_box)
+        self.activity_layout.addWidget(self.hobbies_group_box)
+        self.activity_layout.addWidget(self.organizational_group_box)
+        self.activity_layout.addWidget(self.self_care_group_box)
 
-        self.main_layout.addWidget(show_activities_button)
+        self.activity_layout.addWidget(show_activities_button)
 
-        # Set main layout
-        self.setLayout(self.main_layout)
+        # Add main layout to stacked widget
+        self.stacked_widget.addWidget(self.activity_widget)  # Placeholder widget for the activity tracker layout
+        self.stacked_widget.setCurrentIndex(0)  # Set the initial widget to mood selection
+
+        # Results layout
+        self.results_widget = QWidget()
+        self.results_layout = QVBoxLayout(self.results_widget)
+
+        # Set the stacked widget as the main layout for the widget
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.stacked_widget)
 
     def create_category_group_box(self, category, activities):
         group_box = QGroupBox(category)
@@ -122,53 +115,55 @@ class ActivityTracker(QWidget):
             self.selected_activities.discard(activity)
 
     def show_results_no_personality(self):
+        # Switch to the results layout
+        self.stacked_widget.addWidget(self.results_widget)
+        self.stacked_widget.setCurrentWidget(self.results_widget)
+
         # Clear existing content
-        self.clear_layout(self.main_layout)
+        self.clear_layout(self.results_layout)
 
         # Create new category group boxes based on selected activities
         self.no_personality_result_label = QLabel(f'Your mood is {self.mood}.\nThese are your results.')
-        self.main_layout.addWidget(self.no_personality_result_label)
+        self.results_layout.addWidget(self.no_personality_result_label)
 
         self.no_personality_result_from_max = {
-            "Social": "You Might be a diplomat!",
-            "Hobbies": "You might be an explorer!",
-            "Organizational": "You might be a sentinel!",
-            "Self-Care": "You might be an analyst!"
+            "Social": "You Might be a Diplomat!\nDiplomats are empathetic mediators, driven by ideals and harmony. They excel in understanding emotions, fostering connections, and navigating conflicts with grace.",
+            "Hobbies": "You might be an Explorer!\nExplorers are adventurous creators, embracing spontaneity and excitement. They live in the present, adapting to change effortlessly, and are resourceful problem solvers with a zest for new experiences.",
+            "Organizational": "You might be an Analyst!\nAnalysts are analytical thinkers, valuing logic and innovation. Their precision and intellectual curiosity drive them to seek knowledge, solve complex problems, and push boundaries.",
+            "Self-Care": "You might be a Sentinels!\nSentinels are practical organizers, prioritizing stability and order. They thrive on responsibility, reliability, and attention to detail, ensuring efficiency and a secure environment."
         }
 
         # Find the key with the maximum value in the dictionary
         self.max_key = max(self.point_dict, key=self.point_dict.get)
+
         self.result_np = self.no_personality_result_from_max[self.max_key]
 
         # Display the result
         self.max_points_result_label = QLabel(self.result_np)
-        self.main_layout.addWidget(self.max_points_result_label)
+        self.max_points_result_label.setWordWrap(True)  # Enable word wrap
+
+        self.results_layout.addWidget(self.max_points_result_label)
+
+    def get_selected_mood(self):
+        for button in self.mood_radio_buttons:
+            if button.isChecked():
+                self.mood = button.text()
+
+                # Switch to the activity tracker layout
+                self.stacked_widget.setCurrentIndex(1)
+                return
 
     def clear_layout(self, layout):
         for i in reversed(range(layout.count())):
             item = layout.itemAt(i)
 
-            if isinstance(item, QWidgetItem):
-                item.widget().close()
-            elif isinstance(item, QLayoutItem):
-                self.clear_layout(item.layout())
-
-            # Remove the item from layout
-            layout.removeItem(item)
-
+            if isinstance(item.widget(), QLabel):
+                item.widget().deleteLater()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    
+    tracker = ActivityTracker()
+    tracker.show()
 
-    # Ask for mood first, 
-    mood_dialog = MoodSelectionDialog()
-    # Here we made it so that if my mood_dialog is executed to get selected mood.
-    if mood_dialog.exec() == True:
-        selected_mood = mood_dialog.get_selected_mood()
-
-        #Change window here.
-        # Open ActivityTracker window with the selected mood
-        tracker = ActivityTracker(selected_mood)
-        tracker.show()
-
-        sys.exit(app.exec())
+    sys.exit(app.exec())
