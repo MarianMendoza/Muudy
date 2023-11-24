@@ -1,0 +1,84 @@
+/* style.css */
+
+body {
+    background-color: #f0f0f0;
+    font-family: 'Garamond', sans-serif;
+}
+
+QWidget {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+QGroupBox {
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    margin-top: 1ex;
+}
+
+QRadioButton,
+QCheckBox {
+    color: #333;
+}
+
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+
+QLabel {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Stacked Widget */
+QStackedWidget {
+    background-color: #fff;
+    width: 560px;  /* Set a fixed width for the stacked widget */
+}
+
+/* Results Widget */
+#results_widget {
+    background-color: #f5f5f5;
+}
+
+#no_personality_result_label,
+#max_points_result_label {
+    color: #333;
+}
+
+#max_points_result_label {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+/* Admin Popup */
+#admin_popup {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    width: 300px;  /* Set a fixed width for the admin popup */
+    height: 200px; /* Set a fixed height for the admin popup */
+}
+
+/* This is the Muudy Page CSS */
+/* styles.css */
+
+#mainLabel {
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    border: None;
+}
+

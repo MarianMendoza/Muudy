@@ -1,0 +1,76 @@
+import sys
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QStackedWidget
+from PyQt6.QtCore import QFile, QTextStream, Qt
+from activityTracker import ActivityTracker
+from personalityQuiz import PersonalityQuiz
+
+class MuudyWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.activity_tracker = ActivityTracker()  # Create an instance of ActivityTracker
+
+        #here needs to be changed.
+        # self.personality_quiz = PersonalityQuiz() #Create an instance of Activity Tracker
+
+        self.init_ui()
+
+    def init_ui(self):
+        self.setWindowTitle('Muudy Window')
+        self.setGeometry(100, 100, 700, 300)
+
+
+        self.main_label = QLabel('Muudy')
+        self.main_label.setObjectName('mainLabel')
+
+        self.admin_button = QPushButton('Admin')
+        self.admin_button.setObjectName('adminButton')
+
+        self.member_button = QPushButton('Member')
+        self.member_button.setObjectName('memberButton')
+        self.member_button.clicked.connect(self.show_personality_quiz)
+
+
+        self.guests_button = QPushButton('Guests')
+        self.guests_button.setObjectName('guestsButton')
+        self.guests_button.clicked.connect(self.show_activity_tracker)
+
+        self.buttons_layout = QVBoxLayout()
+        self.buttons_layout.addWidget(self.admin_button)
+        self.buttons_layout.addWidget(self.member_button)
+        self.buttons_layout.addWidget(self.guests_button)
+
+        self.stacked_widget = QStackedWidget(self)
+        self.stacked_widget.addWidget(self.main_label)  # Index 0
+        self.stacked_widget.addWidget(self.activity_tracker)  # Index 1
+
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.addWidget(self.stacked_widget)
+        self.main_layout.addLayout(self.buttons_layout)
+
+        style_file = QFile('styles.css')
+        if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+            stream = QTextStream(style_file)
+            self.setStyleSheet(stream.readAll())
+            style_file.close()
+
+    def show_activity_tracker(self):
+        # Switch to the ActivityTracker widget
+        self.admin_button.hide()
+        self.member_button.hide()
+        self.guests_button.hide()
+        self.stacked_widget.setCurrentIndex(1)
+
+    def show_personality_quiz(self):
+        self.admin_button.hide()
+        self.member_button.hide()
+        self.guests_button.hide()
+        self.stacked_widget1.setCurrentIndex(0)
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+
+    muudy_window = MuudyWindow()
+    muudy_window.show()
+
+    sys.exit(app.exec())
