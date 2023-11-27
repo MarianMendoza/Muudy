@@ -1,23 +1,14 @@
-'''
-Amy Marie Craven
-
-'''
-
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QSlider, QLabel, QPushButton, QStackedWidget, QMessageBox
-from PyQt6.QtCore import Qt,QFile, QTextStream
-from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QSlider, QLabel, QPushButton, QStackedWidget,QHBoxLayout
+from PyQt6.QtCore import Qt
 
 class PersonalityQuiz(QWidget):
     
-    def __init__(self):
+    def __init__(self,social_questions,hobby_questions, selfcare_questions,organization_questions,muudy_window):
         super().__init__()
 
-        
-        self.init()
-    
-    def init(self):
-        self.setGeometry(100, 100, 700, 300)
+        self.muudy_window = muudy_window
+
         self.happiness_values = []
         self.current_page_index = 0
         self.personality_types = {
@@ -34,23 +25,47 @@ class PersonalityQuiz(QWidget):
             'Sentinel': "Sentinels are practical organizers, prioritizing stability and order. They thrive on responsibility, reliability, and attention to detail, ensuring efficiency and a secure environment."
         }
 
-        self.social_questions = ["Going out for food/drinks with friends", "Meeting up with somebody you know and going for a walk", "Being invited to a party", "Playing video games or watching a movie one-on-one with somebody", "Being kept up to date with the latest gossip"]
-        self.hobby_questions = ["Engaging in a physical activity or sport for recreation", "Creating art, whether it's painting, drawing, or any other form", "Attending a live performance or event related to a personal interest", "Spending a quiet day immersed in a favorite book or series", "Exploring a new hobby or activity for the first time"]
-        self.selfcare_questions = ["Reflecting on my achievements, no matter how small", "Engaging in a regular exercise routine to contribute to your well-being", "Getting a good night's sleep", "Engaging in some form of meditation", "Sitting at home and watching a movie with a pint of ice-cream"]
-        self.organization_questions = ["Setting and achieving organizational goals", "Keeping your living or workspace neat and organized", "Collaborating with others in an organized manner", "Cleaning up the entire house to declutter the mind", "Having a systematic approach to managing responsibilities"]
+        self.social_questions = social_questions
+        self.hobby_questions = hobby_questions
+        self.selfcare_questions = selfcare_questions
+        self.organization_questions = organization_questions
+
+        self.init_ui()
+    
+    def init_ui(self):
+        # Create a horizontal layout for the admin button
+
+        # self.create_button_layout()
+        # layout = QVBoxLayout(self)
+
+        start_page = QWidget(self)
+        start_layout = QVBoxLayout(start_page)
+        start_layout.addLayout(self.create_button_layout())
+
+        welcome_label = QLabel("Welcome to Muudy's personality quiz! \nPlease answer the following questions by providing how happy they make you \nfeel using the slider")
+
+        begin_button = QPushButton("Begin Quiz")
+        begin_button.clicked.connect(self.start_questionnaire)
+
+        start_layout.addWidget(welcome_label)
+        start_layout.addWidget(begin_button)
+
 
         self.stacked_widget = QStackedWidget(self)
         self.categories = ['Social', 'Hobbies', 'Self-care', 'Organization']
         question_lists = [self.social_questions, self.hobby_questions, self.selfcare_questions, self.organization_questions]
 
-
+        self.stacked_widget.addWidget(start_page)
 
 
         for category, questions in zip(self.categories, question_lists):
             page_widget = QWidget(self)
             page_layout = QVBoxLayout(page_widget)
+            page_layout.addLayout(self.create_button_layout())
 
             page_layout.addWidget(QLabel(f'{category} Category'))
+
+
             for i, question in enumerate(questions, 1):
                 slider_label = QLabel(f'{i}: {question}')
                 slider = QSlider(Qt.Orientation.Horizontal)  # Horizontal orientation
@@ -61,36 +76,39 @@ class PersonalityQuiz(QWidget):
                 page_layout.addWidget(slider_label)
                 page_layout.addWidget(slider)
 
+            
             self.stacked_widget.addWidget(page_widget)
 
         self.stacked_widget.setCurrentIndex(0)
 
         self.result_label = QLabel()
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
         layout.addWidget(self.stacked_widget)
-
-        self.personality_label = QLabel()
-        layout.addWidget(self.personality_label)
+        layout.addWidget(self.result_label)
 
         self.next_button = QPushButton('Next')
-        if self.stacked_widget.currentIndex() == 0:
-            self.next_button.setVisible(False)
+        self.next_button.setVisible(False)  # Initially hide the "Next" button
         self.next_button.clicked.connect(self.next_category)
+        layout.addWidget(self.next_button)
 
-        self.results_page = QWidget(self)
+        self.results_page = QWidget()
         results_layout = QVBoxLayout(self.results_page)
         results_layout.addWidget(self.result_label)
         results_layout.addWidget(self.next_button)
 
         self.setLayout(layout)
-        self.setFixedSize(600, 400)
 
-        self.setGeometry(100, 100, 700, 300)
-        self.setWindowTitle('Personality Quiz')
-        self.show()
+    def create_button_layout(self):
+        button_layout = QHBoxLayout()
+        button_layout.addStretch(2)
 
-    def show_admin_message(self):
-        QMessageBox.information(self, "Admin Access", "Admin features are not implemented yet.")
+        home_button = QPushButton('Home')
+        home_button.setObjectName('homeButton')
+        home_button.clicked.connect(self.go_to_home)
+        button_layout.addWidget(home_button)
+
+        return button_layout
+
 
     def start_questionnaire(self):
         self.stacked_widget.setCurrentIndex(1)  # Start with the first category (index 1)
@@ -158,11 +176,10 @@ class PersonalityQuiz(QWidget):
         self.next_button.setVisible(True)  # Show the "Next" button on the category questions pages
         self.layout().addWidget(self.next_button)
 
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    personalityTracker = PersonalityQuiz()
-    personalityTracker.show()
-
-    sys.exit(app.exec())
+        
+    def go_to_home(self):
+        # Switch back to the main page (index 0) in the main window
+        self.muudy_window.admin_button.show()
+        self.muudy_window.member_button.show()
+        self.muudy_window.guests_button.show()
+        self.muudy_window.stacked_widget.setCurrentIndex(0)

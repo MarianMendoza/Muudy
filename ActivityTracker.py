@@ -5,17 +5,23 @@ Marian Angeles Mendoza
 
 
 '''
+
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGroupBox, QCheckBox, QPushButton, QLabel, QRadioButton, QFormLayout, QStackedWidget, QHBoxLayout
-from PyQt6.QtCore import QFile, QTextStream
+from PyQt6.QtCore import QFile, QTextStream, QTimer
 from PyQt6.QtGui import QFont
+from Main import MuudyWindow
 
 class ActivityTracker(QWidget):
-    def __init__(self):
+    def __init__(self,muudy_window):
+
+
         super().__init__()
 
         self.selected_activities = set()
         self.mood = None
+        self.muudy_window = muudy_window
+
 
         self.init_ui()
 
@@ -23,36 +29,25 @@ class ActivityTracker(QWidget):
         self.setWindowTitle('Activity Tracker')
         self.setGeometry(100, 100, 700, 300)
 
-        # Add a button for switching to admin feature
-        admin_button = QPushButton('Admin')
-        admin_button.clicked.connect(self.show_admin_feature)
-        admin_button.setObjectName("adminButton")
-
-
- 
-        # Create a horizontal layout for the admin button
-        admin_layout = QHBoxLayout()
-        admin_layout.addStretch(1)
-
-        admin_layout.addWidget(admin_button)
-
-
-        #Back Button
-        go_back_button = QPushButton("Back")
-        go_back_button.clicked.connect(self.go_back)
-        admin_layout.addWidget(go_back_button)
-
-        # Add the admin layout to the main layout
-        main_layout = QVBoxLayout(self)
-        main_layout.addLayout(admin_layout)
-
-        #Home
-        home_button = QPushButton("Home")
-        home_button.clicked.connect(self.go_home)
-        admin_layout.addWidget(home_button)
-
         # Create a stacked widget for different screens
         self.stacked_widget = QStackedWidget()
+
+
+        # Create a horizontal layout for the admin button
+        button_layout = QHBoxLayout()
+        button_layout.addStretch(2)
+
+        # # Add the button layout to the main layout
+        main_layout = QVBoxLayout(self)
+        main_layout.addLayout(button_layout)
+
+        self.home_button = QPushButton('Home')
+        self.home_button.setObjectName('homeButton')
+        self.home_button.clicked.connect(self.go_to_home)
+
+        # layout = QVBoxLayout(self)
+        button_layout.addWidget(self.home_button)
+
 
         # Mood selection layout
         mood_widget = QWidget()
@@ -124,17 +119,6 @@ class ActivityTracker(QWidget):
 
         return group_box
     
-    def go_back(self):
-        # Return to the last page
-
-        current_index = self.stacked_widget.currentIndex()
-        if current_index > 0:
-            self.stacked_widget.setCurrentIndex(current_index - 1)
-
-    def go_home(self):
-        # Return to the last page
-        self.stacked_widget.setCurrentIndex(2)
-
 
     def activity_selected(self):
         sender = self.sender()
@@ -211,16 +195,10 @@ class ActivityTracker(QWidget):
         self.max_points_result_label.setWordWrap(True)  # Enable word wrap
         self.results_layout.addWidget(self.max_points_result_label)
 
-    def show_admin_feature(self):
-        self.setWindowTitle('Admin')
-        self.admin_popup = QWidget()
-        self.admin_popup.setGeometry(700, 100, 300, 200)
-        admin_layout = QVBoxLayout(self.admin_popup)
-        admin_label = QLabel("Admin Feature not available.")
-        admin_layout.addWidget(admin_label)
-        self.admin_popup.show()
+
 
     def get_selected_mood(self):
+        # print(self.stacked_widget.currentIndex())
         for button in self.mood_radio_buttons:
             if button.isChecked():
                 self.mood = button.text()
@@ -235,19 +213,39 @@ class ActivityTracker(QWidget):
 
             if isinstance(item.widget(), QLabel):
                 item.widget().deleteLater()
+    
+    def go_to_home(self):
+        # Switch back to the main page (index 0) in the main window
+        self.muudy_window.admin_button.show()
+        self.muudy_window.member_button.show()
+        self.muudy_window.guests_button.show()
+        self.muudy_window.stacked_widget.setCurrentIndex(0)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    from Main import MuudyWindow
+
+
         # Apply the external stylesheet
-    style_file = QFile('styles.css')
-    if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
-        stream = QTextStream(style_file)
-        app.setStyleSheet(stream.readAll())
-        style_file.close()
+    # style_file = QFile('styles.css')
+    # if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+    #     stream = QTextStream(style_file)
+    #     app.setStyleSheet(stream.readAll())
+    #     style_file.close()
+
+    # muudy_window.show()
 
 
-    tracker = ActivityTracker()
-    tracker.show()
+    # Assuming the window needs some time to be fully displayed
+
+
+    # tracker = ActivityTracker()
+    muudy_window = MuudyWindow()
+    tracker = ActivityTracker(muudy_window)
+    # muudy_window.show()
+
+
+
 
     sys.exit(app.exec())
