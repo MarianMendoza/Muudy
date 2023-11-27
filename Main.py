@@ -57,11 +57,11 @@ class MuudyWindow(QWidget):
         self.main_layout.addWidget(self.stacked_widget)
         self.main_layout.addLayout(self.buttons_layout)
 
-        style_file = QFile('styles.css')
-        if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
-            stream = QTextStream(style_file)
-            self.setStyleSheet(stream.readAll())
-            style_file.close()
+        # style_file = QFile('styles.css')
+        # if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+        #     stream = QTextStream(style_file)
+        #     self.setStyleSheet(stream.readAll())
+        #     style_file.close()
 
     def show_activity_tracker(self):
         # Switch to the ActivityTracker widget

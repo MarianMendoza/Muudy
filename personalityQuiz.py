@@ -190,11 +190,11 @@ if __name__ == '__main__':
     
     app = QApplication(sys.argv)
 
-    style_file = QFile('styles.css')
-    if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
-        stream = QTextStream(style_file)
-        app.setStyleSheet(stream.readAll())
-        style_file.close()
+    # style_file = QFile('styles.css')
+    # if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+    #     stream = QTextStream(style_file)
+    #     app.setStyleSheet(stream.readAll())
+    #     style_file.close()
 
     muudy_window = MuudyWindow()
     muudy_window.show()
