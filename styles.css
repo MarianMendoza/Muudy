@@ -3,19 +3,19 @@
 body {
     background-color: #f0f0f0;
     font-family: 'Garamond', sans-serif;
+    padding:10px;
 }
 
 QWidget {
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 10px;
 }
 
 QGroupBox {
     border: 2px solid #4CAF50;
     border-radius: 5px;
-    margin-top: 1ex;
+
 }
 
 QRadioButton,
@@ -26,9 +26,9 @@ QCheckBox {
 QPushButton {
     background-color: #4CAF50;
     color: white;
-    padding: 8px 16px;
     border: none;
     border-radius: 3px;
+    padding: 10px;
     cursor: pointer;
 }
 
@@ -67,7 +67,6 @@ QStackedWidget {
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 10px;
     width: 300px;  /* Set a fixed width for the admin popup */
     height: 200px; /* Set a fixed height for the admin popup */
 }

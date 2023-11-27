@@ -1,12 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QSlider, QLabel, QPushButton, QStackedWidget,QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QSlider, QLabel, QPushButton, QStackedWidget, QHBoxLayout
 from PyQt6.QtCore import Qt
+from Main import MuudyWindow
 
 class PersonalityQuiz(QWidget):
     
-    def __init__(self,social_questions,hobby_questions, selfcare_questions,organization_questions,muudy_window):
+    def __init__(self, social_questions, hobby_questions, selfcare_questions, organization_questions,muudy_window):
         super().__init__()
-
         self.muudy_window = muudy_window
 
         self.happiness_values = []
@@ -33,40 +33,36 @@ class PersonalityQuiz(QWidget):
         self.init_ui()
     
     def init_ui(self):
-        # Create a horizontal layout for the admin button
 
-        # self.create_button_layout()
-        # layout = QVBoxLayout(self)
 
-        start_page = QWidget(self)
-        start_layout = QVBoxLayout(start_page)
+        self.start_page = QWidget(self)
+        start_layout = QVBoxLayout(self.start_page)
         start_layout.addLayout(self.create_button_layout())
-
-        welcome_label = QLabel("Welcome to Muudy's personality quiz! \nPlease answer the following questions by providing how happy they make you \nfeel using the slider")
+        welcome_label = QLabel("Welcome to Muudy's personality quiz! \nPlease answer the following questions by providing how happy the make you \nfeel using the slider")
 
         begin_button = QPushButton("Begin Quiz")
         begin_button.clicked.connect(self.start_questionnaire)
 
         start_layout.addWidget(welcome_label)
+ 
         start_layout.addWidget(begin_button)
-
 
         self.stacked_widget = QStackedWidget(self)
         self.categories = ['Social', 'Hobbies', 'Self-care', 'Organization']
         question_lists = [self.social_questions, self.hobby_questions, self.selfcare_questions, self.organization_questions]
 
-        self.stacked_widget.addWidget(start_page)
-
+        self.stacked_widget.addWidget(self.start_page)
 
         for category, questions in zip(self.categories, question_lists):
             page_widget = QWidget(self)
             page_layout = QVBoxLayout(page_widget)
             page_layout.addLayout(self.create_button_layout())
 
+
             page_layout.addWidget(QLabel(f'{category} Category'))
 
-
             for i, question in enumerate(questions, 1):
+
                 slider_label = QLabel(f'{i}: {question}')
                 slider = QSlider(Qt.Orientation.Horizontal)  # Horizontal orientation
                 slider.setMinimum(1)  # Set the minimum value to 1
@@ -76,39 +72,35 @@ class PersonalityQuiz(QWidget):
                 page_layout.addWidget(slider_label)
                 page_layout.addWidget(slider)
 
-            
             self.stacked_widget.addWidget(page_widget)
 
         self.stacked_widget.setCurrentIndex(0)
 
         self.result_label = QLabel()
-        layout = QVBoxLayout(self)
+        layout = QVBoxLayout()
         layout.addWidget(self.stacked_widget)
-        layout.addWidget(self.result_label)
+
+
+        self.personality_label = QLabel()
+        layout.addWidget(self.personality_label)
 
         self.next_button = QPushButton('Next')
-        self.next_button.setVisible(False)  # Initially hide the "Next" button
+        if self.stacked_widget.currentIndex() == 0:
+            self.next_button.setVisible(False)
         self.next_button.clicked.connect(self.next_category)
-        layout.addWidget(self.next_button)
 
-        self.results_page = QWidget()
+        self.results_page = QWidget(self)
         results_layout = QVBoxLayout(self.results_page)
         results_layout.addWidget(self.result_label)
         results_layout.addWidget(self.next_button)
 
         self.setLayout(layout)
+        self.setFixedSize(600, 400)
 
-    def create_button_layout(self):
-        button_layout = QHBoxLayout()
-        button_layout.addStretch(2)
 
-        home_button = QPushButton('Home')
-        home_button.setObjectName('homeButton')
-        home_button.clicked.connect(self.go_to_home)
-        button_layout.addWidget(home_button)
-
-        return button_layout
-
+        self.setGeometry(300, 300, 400, 300)
+        self.setWindowTitle('Happiness Tracker')
+        self.show()
 
     def start_questionnaire(self):
         self.stacked_widget.setCurrentIndex(1)  # Start with the first category (index 1)
@@ -122,6 +114,12 @@ class PersonalityQuiz(QWidget):
         else:
             self.stacked_widget.setCurrentIndex(len(self.categories) + 1)  # Adjust for the welcome page
             self.show_results()
+
+    def go_home(self):
+        self.muudy_window.admin_button.show()
+        self.muudy_window.member_button.show()
+        self.muudy_window.guests_button.show()
+        self.muudy_window.stacked_widget.setCurrentIndex(0)
 
     def show_results(self):
         for i in range(self.stacked_widget.count()):
@@ -175,11 +173,31 @@ class PersonalityQuiz(QWidget):
         self.happiness_values = []  # Reset happiness values
         self.next_button.setVisible(True)  # Show the "Next" button on the category questions pages
         self.layout().addWidget(self.next_button)
+    
+    def create_button_layout(self):
+        button_layout = QHBoxLayout()
+        button_layout.addStretch(2)
 
-        
-    def go_to_home(self):
-        # Switch back to the main page (index 0) in the main window
-        self.muudy_window.admin_button.show()
-        self.muudy_window.member_button.show()
-        self.muudy_window.guests_button.show()
-        self.muudy_window.stacked_widget.setCurrentIndex(0)
+        home_button = QPushButton('Home')
+        home_button.setObjectName('homeButton')
+        home_button.clicked.connect(self.go_home)
+        button_layout.addWidget(home_button)
+
+        return button_layout
+
+
+if __name__ == '__main__':
+    
+    app = QApplication(sys.argv)
+
+    style_file = QFile('styles.css')
+    if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+        stream = QTextStream(style_file)
+        app.setStyleSheet(stream.readAll())
+        style_file.close()
+
+    muudy_window = MuudyWindow()
+    muudy_window.show()
+
+
+    sys.exit(app.exec())
