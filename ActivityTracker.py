@@ -133,7 +133,7 @@ class ActivityTracker(QWidget):
 
     def go_home(self):
         # Return to the last page
-        self.stacked_widget.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(2)
 
 
     def activity_selected(self):

@@ -14,9 +14,10 @@ class PersonalityQuiz(QWidget):
         super().__init__()
 
         
-        self.init1()
+        self.init()
     
-    def init1(self):
+    def init(self):
+        self.setGeometry(100, 100, 700, 300)
         self.happiness_values = []
         self.current_page_index = 0
         self.personality_types = {
@@ -38,7 +39,7 @@ class PersonalityQuiz(QWidget):
         self.selfcare_questions = ["Reflecting on my achievements, no matter how small", "Engaging in a regular exercise routine to contribute to your well-being", "Getting a good night's sleep", "Engaging in some form of meditation", "Sitting at home and watching a movie with a pint of ice-cream"]
         self.organization_questions = ["Setting and achieving organizational goals", "Keeping your living or workspace neat and organized", "Collaborating with others in an organized manner", "Cleaning up the entire house to declutter the mind", "Having a systematic approach to managing responsibilities"]
 
-        self.stacked_widget1 = QStackedWidget(self)
+        self.stacked_widget = QStackedWidget(self)
         self.categories = ['Social', 'Hobbies', 'Self-care', 'Organization']
         question_lists = [self.social_questions, self.hobby_questions, self.selfcare_questions, self.organization_questions]
 
@@ -60,19 +61,19 @@ class PersonalityQuiz(QWidget):
                 page_layout.addWidget(slider_label)
                 page_layout.addWidget(slider)
 
-            self.stacked_widget1.addWidget(page_widget)
+            self.stacked_widget.addWidget(page_widget)
 
-        self.stacked_widget1.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(0)
 
         self.result_label = QLabel()
         layout = QVBoxLayout()
-        layout.addWidget(self.stacked_widget1)
+        layout.addWidget(self.stacked_widget)
 
         self.personality_label = QLabel()
         layout.addWidget(self.personality_label)
 
         self.next_button = QPushButton('Next')
-        if self.stacked_widget1.currentIndex() == 0:
+        if self.stacked_widget.currentIndex() == 0:
             self.next_button.setVisible(False)
         self.next_button.clicked.connect(self.next_category)
 
@@ -92,21 +93,21 @@ class PersonalityQuiz(QWidget):
         QMessageBox.information(self, "Admin Access", "Admin features are not implemented yet.")
 
     def start_questionnaire(self):
-        self.stacked_widget1.setCurrentIndex(1)  # Start with the first category (index 1)
+        self.stacked_widget.setCurrentIndex(1)  # Start with the first category (index 1)
         self.next_button.setVisible(True)  # Show the "Next" button on the category questions pages
         self.layout().addWidget(self.next_button)
 
     def next_category(self):
         if self.current_page_index < len(self.categories) - 1:
             self.current_page_index += 1
-            self.stacked_widget1.setCurrentIndex(self.current_page_index + 1)  # Adjust for the welcome page
+            self.stacked_widget.setCurrentIndex(self.current_page_index + 1)  # Adjust for the welcome page
         else:
-            self.stacked_widget1.setCurrentIndex(len(self.categories) + 1)  # Adjust for the welcome page
+            self.stacked_widget.setCurrentIndex(len(self.categories) + 1)  # Adjust for the welcome page
             self.show_results()
 
     def show_results(self):
-        for i in range(self.stacked_widget1.count()):
-            page = self.stacked_widget1.widget(i)
+        for i in range(self.stacked_widget.count()):
+            page = self.stacked_widget.widget(i)
             for j in range(page.layout().count()):
                 item = page.layout().itemAt(j)
                 if isinstance(item.widget(), QSlider):
@@ -115,8 +116,8 @@ class PersonalityQuiz(QWidget):
         if all(score == 1 for score in self.happiness_values):
             self.result_label.setText("This site may not be for you. You don't seem to fit into any of our categories.\nIf you'd like to carry on to our activity tracker, feel free, but it may be inaccurate.")
             personality_type = ""
-            self.stacked_widget1.addWidget(self.results_page)
-            self.stacked_widget1.setCurrentWidget(self.results_page)
+            self.stacked_widget.addWidget(self.results_page)
+            self.stacked_widget.setCurrentWidget(self.results_page)
             return
     
 
@@ -148,11 +149,11 @@ class PersonalityQuiz(QWidget):
 
             self.result_label.setText(description)
 
-        self.stacked_widget1.addWidget(self.results_page)
-        self.stacked_widget1.setCurrentWidget(self.results_page)
+        self.stacked_widget.addWidget(self.results_page)
+        self.stacked_widget.setCurrentWidget(self.results_page)
 
     def reset_questionnaire(self):
-        self.stacked_widget1.setCurrentIndex(1)  # Go back to the first question page
+        self.stacked_widget.setCurrentIndex(1)  # Go back to the first question page
         self.happiness_values = []  # Reset happiness values
         self.next_button.setVisible(True)  # Show the "Next" button on the category questions pages
         self.layout().addWidget(self.next_button)

@@ -11,7 +11,7 @@ class MuudyWindow(QWidget):
         self.activity_tracker = ActivityTracker()  # Create an instance of ActivityTracker
 
         #here needs to be changed.
-        # self.personality_quiz = PersonalityQuiz() #Create an instance of Activity Tracker
+        self.personality_quiz = PersonalityQuiz() #Create an instance of Activity Tracker
 
         self.init_ui()
 
@@ -43,16 +43,18 @@ class MuudyWindow(QWidget):
         self.stacked_widget = QStackedWidget(self)
         self.stacked_widget.addWidget(self.main_label)  # Index 0
         self.stacked_widget.addWidget(self.activity_tracker)  # Index 1
+        self.stacked_widget.addWidget(self.personality_quiz)  # Index 2
+
 
         self.main_layout = QVBoxLayout(self)
         self.main_layout.addWidget(self.stacked_widget)
         self.main_layout.addLayout(self.buttons_layout)
 
-        style_file = QFile('styles.css')
-        if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
-            stream = QTextStream(style_file)
-            self.setStyleSheet(stream.readAll())
-            style_file.close()
+        # style_file = QFile('styles.css')
+        # if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+        #     stream = QTextStream(style_file)
+        #     self.setStyleSheet(stream.readAll())
+        #     style_file.close()
 
     def show_activity_tracker(self):
         # Switch to the ActivityTracker widget
@@ -65,7 +67,7 @@ class MuudyWindow(QWidget):
         self.admin_button.hide()
         self.member_button.hide()
         self.guests_button.hide()
-        self.stacked_widget1.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(2)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
