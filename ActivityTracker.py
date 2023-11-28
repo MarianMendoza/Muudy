@@ -12,7 +12,24 @@ from PyQt6.QtGui import QFont
 from Main import MuudyWindow
 
 class ActivityTracker(QWidget):
+    '''
+    Activity tracker class represents the widget for tracking users activity.
+
+    This class allow uses to select their mood, and activities that were done that day.
+
+    Returns appropriate output.
+    
+    '''
+
+
+    
     def __init__(self,muudy_window):
+        '''
+        Initializes the activity window
+
+        Muudy_window, is the main window instance
+        
+        '''
         super().__init__()
 
         self.selected_activities = set()
@@ -22,11 +39,13 @@ class ActivityTracker(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        '''
+        Initializes the ui for the activity tracker.
+        
+        '''
         self.setWindowTitle('Activity Tracker')
         self.setGeometry(100, 100, 700, 300)
 
-        
-        # Create a horizontal layout for the admin button
         button_layout = QHBoxLayout()
         button_layout.addStretch(1)
 
@@ -36,19 +55,15 @@ class ActivityTracker(QWidget):
         go_back_button.clicked.connect(self.go_back)
         button_layout.addWidget(go_back_button)
 
-        # Add the admin layout to the main layout
         main_layout = QVBoxLayout(self)
         main_layout.addLayout(button_layout)
 
-        #Home
         home_button = QPushButton("Home")
         home_button.clicked.connect(self.go_home)
         button_layout.addWidget(home_button)
 
-        # Create a stacked widget for different screens
         self.stacked_widget = QStackedWidget()
 
-        # Mood selection layout
         mood_widget = QWidget()
         self.mood_layout = QFormLayout(mood_widget)
         self.mood_radio_buttons = [
@@ -63,29 +78,23 @@ class ActivityTracker(QWidget):
         self.mood_layout.addWidget(self.ok_button)
         self.stacked_widget.addWidget(mood_widget)
 
-        # Activity tracker layout
         self.activity_widget = QWidget()
         self.activity_layout = QVBoxLayout(self.activity_widget)
 
-        # Points
         self.social_points = 0
         self.hobbies_points = 0
         self.organizational_points = 0
         self.self_care_points = 0
-        # These points are appended in the following order. So max/min point is picked then returns output.
         self.point_dict = {"Social": 0, "Hobbies": 0, "Organizational": 0, "Self-Care": 0}
 
-        # Create category group boxes
         self.social_group_box = self.create_category_group_box('Social', ['Drinking', 'Cafe Hopping', 'People Watching'])
         self.hobbies_group_box = self.create_category_group_box('Hobbies', ['Draw', 'Watch Movies', 'Read'])
         self.organizational_group_box = self.create_category_group_box('Organizational', ['Study', 'Read Articles', 'Budget'])
         self.self_care_group_box = self.create_category_group_box('Self-care', ['Meditate', 'Yoga', 'Tidy Safe Space'])
 
-        # Create button to display selected activities
         show_activities_button = QPushButton('Select Activities')
         show_activities_button.clicked.connect(self.show_results_no_personality)
 
-        # Add components to the activity layout
         self.activity_layout.addWidget(self.social_group_box)
         self.activity_layout.addWidget(self.hobbies_group_box)
         self.activity_layout.addWidget(self.organizational_group_box)
@@ -93,22 +102,29 @@ class ActivityTracker(QWidget):
 
         self.activity_layout.addWidget(show_activities_button)
 
-        # Add the activity layout to the stacked widget
         self.stacked_widget.addWidget(self.activity_widget)  # Placeholder widget for the activity tracker layout
         self.stacked_widget.setCurrentIndex(0)  # Set the initial widget to mood selection
 
-        # Results layout
         self.results_widget = QWidget()
         self.results_layout = QVBoxLayout(self.results_widget)
 
-        # Add the stacked widget to the main layout
         main_layout.addWidget(self.stacked_widget)
 
     def create_category_group_box(self, category, activities):
+        """
+        Create a group box for a category with checkboxes for each activity.
+
+        Args:
+            category (str): The category name.
+            activities (list): List of activity names in the category.
+
+        Returns:
+            QGroupBox: The created group box.
+        """
+
         group_box = QGroupBox(category)
         layout = QVBoxLayout()
 
-        # Create check boxes for each activity
         for activity in activities:
             check_box = QCheckBox(activity)
             check_box.clicked.connect(self.activity_selected)
@@ -119,26 +135,35 @@ class ActivityTracker(QWidget):
         return group_box
     
     def go_back(self):
-        # Return to the last page
-
+        '''
+        Go back button
+        
+        '''
         current_index = self.stacked_widget.currentIndex()
         if current_index > 0:
             self.stacked_widget.setCurrentIndex(current_index - 1)
 
     def go_home(self):
+        '''
+        Go Home
+        
+        '''
         self.muudy_window.admin_button.show()
         self.muudy_window.member_button.show()
         self.muudy_window.guests_button.show()
         self.muudy_window.stacked_widget.setCurrentIndex(0)
 
     def activity_selected(self):
+        '''
+        Handle the selection/deselection of an activity tracker
+        
+        '''
         sender = self.sender()
         activity = sender.text()
 
         if sender.isChecked():
             self.selected_activities.add(activity)
 
-            # Check the category and increment points accordingly
             if activity in ['Drinking', 'Cafe Hopping', 'People Watching']:
                 self.social_points += 1
                 self.point_dict["Social"] = self.social_points
@@ -159,21 +184,21 @@ class ActivityTracker(QWidget):
             self.selected_activities.discard(activity)
 
     def show_results_no_personality(self):
+        '''
+        Show the results.
+        '''
         self.stacked_widget.addWidget(self.results_widget)
         self.stacked_widget.setCurrentWidget(self.results_widget)
 
         self.no_personality_result_label = QLabel(f'You have chosen, {self.mood}.\nBased on our Muudy predictions.')
 
-        # Clear existing content
         self.clear_layout(self.results_layout)
 
-        # Check if no activities were selected
         if not self.selected_activities:
             self.no_personality_result_label.setText("You have not chosen any activities. Please choose some for analysis.")
             self.results_layout.addWidget(self.no_personality_result_label)
             return
 
-        # Create new category group boxes based on selected activities
         self.results_layout.addWidget(self.no_personality_result_label)
 
         self.no_personality_result_from_max = {
@@ -184,13 +209,11 @@ class ActivityTracker(QWidget):
         }
         self.personalities = {"Social": "Diplomat", "Hobbies": "Explorer", "Organizational": "Analyst", "Self-Care": "Sentinel"}
 
-        # Find the key with the maximum value in the dictionary
         self.max_key = max(self.point_dict, key=self.point_dict.get)
         if all(value == self.point_dict[self.max_key] for value in self.point_dict.values()):
             self.no_personality_result_label.setText("You've done a lot! Consider taking the Muudy Personality test for a more detailed analysis.")
             # self.results_layout.addWidget(self.no_personality_result_label)
 
-        # Check if mood is "Sad" and exclude the max key
         if self.mood == "Sad":
             excluded_keys = [key for key in self.personalities.keys() if key != self.max_key]
             self.result_np = "You might be a " + ", ".join([self.personalities[key].split('!')[0] for key in excluded_keys])
@@ -198,10 +221,8 @@ class ActivityTracker(QWidget):
         elif self.mood == "Neutral":
             self.result_np = "Try taking the personality test for a further analysis."
         else:
-            # Display the result based on mood
             self.result_np = self.no_personality_result_from_max[self.max_key]
 
-        # Display the result
         self.max_points_result_label = QLabel(self.result_np)
         self.max_points_result_label.setWordWrap(True)  # Enable word wrap
         self.results_layout.addWidget(self.max_points_result_label)
@@ -209,6 +230,10 @@ class ActivityTracker(QWidget):
     
 
     def get_selected_mood(self):
+        '''
+        Get selected Mood
+        
+        '''
         for button in self.mood_radio_buttons:
             if button.isChecked():
                 self.mood = button.text()
@@ -218,6 +243,13 @@ class ActivityTracker(QWidget):
                 return
 
     def clear_layout(self, layout):
+        '''
+        Clear the layout
+
+        Args:
+            Layout to be cleared
+        
+        '''
         for i in reversed(range(layout.count())):
             item = layout.itemAt(i)
 
