@@ -1,7 +1,7 @@
 /* styles.css */
 
 QWidget {
-    background-color: #c5e1a5; /* Pastel green background for all widgets */
+    background-color: #ffffff; /* White background for all widgets */
 }
 
 QPushButton {
@@ -11,11 +11,22 @@ QPushButton {
     font-size: 14px;
     border-radius: 5px;
     color: #ffffff; /* White text color */
+    font-family: 'Georgia', serif; /* Georgia font for buttons */
 }
 
 QLabel {
-    color: #4caf50; /* Darker pastel green for labels */
-    font-size: 16px;
+    font-size: 16px; /* Increase font size for all labels */
+}
+
+#mainLabel {
+    font-size: 36px; /* Increase font size for the main label */
+    text-align: center; /* Center text alignment */
+    color: #4caf50; /* Darker pastel green for the main label */
+    font-family: 'Georgia', serif; /* Georgia font for the main label */
+}
+
+#categoryLabel {
+    font-family: 'Georgia', serif; /* Georgia font for category labels */
 }
 
 QGroupBox {
@@ -24,33 +35,29 @@ QGroupBox {
     margin-top: 10px;
 }
 
-QRadioButton {
-    color: #4caf50; /* Darker pastel green for radio buttons */
-}
-
-QRadioButton::indicator {
-    width: 20px; /* Set the width of the radio button */
-    height: 20px; /* Set the height of the radio button */
-    border: 2px solid #4caf50; /* Border color for the radio button */
-    border-radius: 50%; /* Make the radio button circular */
-    background-color: #aed581; /* Background color for the radio button */
-}
-
-QRadioButton::indicator:checked {
-    background-color: #4caf50; /* Change background color when radio button is checked */
-    border: 2px solid #4caf50; /* Change border color when radio button is checked */
-}
-
+QRadioButton,
 QCheckBox {
-    color: #4caf50; /* Darker pastel green for check boxes */
+    color: #4caf50; /* Darker pastel green for radio buttons and check boxes */
+}
+
+QRadioButton::indicator,
+QCheckBox::indicator {
+    width: 20px; /* Set the width of the radio button and checkbox */
+    height: 20px; /* Set the height of the radio button and checkbox */
+    border: 2px solid #4caf50; /* Border color for the radio button and checkbox */
+    border-radius: 50%; /* Make the radio button and checkbox circular */
+    background-color: #aed581; /* Background color for the radio button and checkbox */
+}
+
+QRadioButton::indicator:checked,
+QCheckBox::indicator:checked {
+    background-color: #4caf50; /* Change background color when radio button and checkbox are checked */
+    border: 2px solid #4caf50; /* Change border color when radio button and checkbox are checked */
 }
 
 QStackedWidget {
-    background-color: #c5e1a5; /* Set the background color for the stacked widget */
+    background-color: #ffffff; /* Set the background color for the stacked widget */
 }
-
-/* styles.css */
-
 
 QSlider::groove:horizontal {
     height: 8px; /* Set the height of the groove */
@@ -68,3 +75,5 @@ QSlider::handle:horizontal {
 QSlider::sub-page:horizontal {
     background: #4caf50; /* Dark green color for the filled portion of the groove */
 }
+
+/* styles.css */

@@ -26,7 +26,7 @@ class MuudyWindow(QWidget):
 
         
 
-        from activityTracker import ActivityTracker
+        from ActivityTracker import ActivityTracker
         self.activity_tracker = ActivityTracker(self)  
 
         from personalityQuiz import PersonalityQuiz
@@ -113,12 +113,20 @@ class MuudyWindow(QWidget):
         Show admin Feature
         
         '''
-        self.setWindowTitle('Admin')
         self.admin_popup = QWidget()
         self.admin_popup.setGeometry(700, 100, 300, 200)
         admin_layout = QVBoxLayout(self.admin_popup)
         admin_label = QLabel("Admin Feature not available.")
+        admin_label.setStyleSheet('''
+        color: #4caf50; /* Darker pastel green for labels */
+        font-size: 16px;
+        text-align: center;
+        font-family: 'Georgia', serif; /* Georgia font for labels */
+        text-align: center; /* Center text alignment */
+        background-color: #ffffff; /* White background for labels */
+    ''')
         admin_layout.addWidget(admin_label)
+        self.admin_popup.setWindowTitle('Admin')
         self.admin_popup.show()
 
 if __name__ == '__main__':

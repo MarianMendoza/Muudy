@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QSlider, QLabel, QPushButton, QStackedWidget, QHBoxLayout
 from PyQt6.QtCore import Qt
 from Main import MuudyWindow
-from activityTracker import ActivityTracker
+from ActivityTracker import ActivityTracker
 
 class PersonalityQuiz(QWidget):
     
