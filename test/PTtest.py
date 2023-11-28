@@ -1,13 +1,14 @@
 import sys
 from PyQt6.QtWidgets import QApplication
 from personalityQuiz import PersonalityQuiz  
+from Main import MuudyWindow
 
 def test_category_with_highest_points_displays_correct_result():
     # Create the QApplication instance
     app = QApplication(sys.argv)
-
+    mw = MuudyWindow()
     # Create an instance of PersonalityQuiz (replace the question lists with actual data)
-    quiz = PersonalityQuiz([], [], [], [])
+    quiz = PersonalityQuiz([], [], [], [], mw)
 
     # Simulate answering questions and calculating points (replace with your actual logic)
     quiz.happiness_values = [10,10,10,10,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]

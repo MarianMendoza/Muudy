@@ -3,8 +3,8 @@ import unittest
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtTest import QTest
 from PyQt6.QtCore import Qt
-from Main import MuudyWindow 
-
+from m import MuudyWindow 
+ 
 class TestMuudyWindow(unittest.TestCase):
     def setUp(self):
         self.app = QApplication(sys.argv)

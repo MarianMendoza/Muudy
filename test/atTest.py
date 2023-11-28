@@ -1,7 +1,8 @@
 import pytest
 from PyQt6.QtWidgets import QApplication
-from activityTracker import ActivityTracker
-
+from unittest.mock import MagicMock  # Import MagicMock for creating a mock object
+from a import ActivityTracker
+ 
 @pytest.fixture
 def app():
     """
@@ -15,8 +16,11 @@ def test_get_selected_mood(app):
     """
     Test the get_selected_mood method of ActivityTracker.
     """
-    # Create an instance of ActivityTracker
-    activity_tracker = ActivityTracker()
+    # Create a mock muudy_window
+    muudy_window_mock = MagicMock()
+
+    # Create an instance of ActivityTracker with the mock muudy_window
+    activity_tracker = ActivityTracker(muudy_window_mock)
 
     # Simulate the user selecting the 'Happy' mood
     activity_tracker.mood_radio_buttons[0].setChecked(True)
@@ -29,5 +33,3 @@ def test_get_selected_mood(app):
 
     # Check if the stacked widget index is changed
     assert activity_tracker.stacked_widget.currentIndex() == 1
-
-
