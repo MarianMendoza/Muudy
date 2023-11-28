@@ -49,7 +49,6 @@ class PersonalityQuiz(QWidget):
         # Start Page
         self.start_page = QWidget(self)
         start_layout = QVBoxLayout(self.start_page)
-        start_layout.addLayout(self.create_button_layout())
         welcome_label = QLabel("Welcome to Muudy's personality quiz!\n"
                                "Please answer the following questions by providing how happy they make you\n"
                                "feel using the slider")
@@ -71,7 +70,6 @@ class PersonalityQuiz(QWidget):
             # Page for each category
             page_widget = QWidget(self)
             page_layout = QVBoxLayout(page_widget)
-            page_layout.addLayout(self.create_button_layout())
 
             page_layout.addWidget(QLabel(f'{category} Category'))
 
@@ -91,9 +89,15 @@ class PersonalityQuiz(QWidget):
         self.stacked_widget.setCurrentIndex(0)
 
         # Result Page
+        
         self.result_label = QLabel()
         layout = QVBoxLayout()
+
+        layout.addLayout(self.create_button_layout())
+
+
         layout.addWidget(self.stacked_widget)
+
 
         self.personality_label = QLabel()
         layout.addWidget(self.personality_label)
@@ -103,6 +107,8 @@ class PersonalityQuiz(QWidget):
         if self.stacked_widget.currentIndex() == 0:
             self.next_button.setVisible(False)
         self.next_button.clicked.connect(self.next_category)
+
+        
 
         # Activity Tracker Button
         self.at_button = QPushButton('Go to Activity Tracker')
@@ -121,7 +127,7 @@ class PersonalityQuiz(QWidget):
         self.setLayout(layout)
 
         # Set window properties
-        self.setGeometry(300, 300, 400, 300)
+        # self.setGeometry(300, 300, 400, 300)
         self.setWindowTitle('Happiness Tracker')
         self.show()
 
@@ -137,6 +143,8 @@ class PersonalityQuiz(QWidget):
         
         # Add the "Next" button to the layout
         self.layout().addWidget(self.next_button)
+
+    
     
     def next_category(self):
         """
@@ -170,11 +178,13 @@ class PersonalityQuiz(QWidget):
         and applies the stylesheet for the Activity Tracker.
         """
         # Get the index of the Activity Tracker page in the stacked widget
+
         activity_tracker_index = self.stacked_widget.indexOf(self.activity_tracker)
 
         # Hide the results page and 'Next' button
         self.results_page.hide()
         self.next_button.hide()
+        self.home_button.hide()
 
         # Set the current index to the Activity Tracker page
         self.stacked_widget.setCurrentIndex(activity_tracker_index)
@@ -229,10 +239,13 @@ class PersonalityQuiz(QWidget):
                 personality_type = f'{equal_categories[0]} and {equal_categories[1]}'
                 descriptions = [self.descriptions[personality_type] for personality_type in equal_categories]
                 description = f'You are a {personality_type}!\n\nDescriptions:\n\n1. {descriptions[0]}\n\n2. {descriptions[1]} \n\n Feel free to identify with whichever you prefer! You deserve it'
+
             else:
                 description = f'You are a {personality_type}! \n {self.descriptions[personality_type]}'
 
+
             self.result_label.setText(description)
+            self.result_label.setWordWrap(True)
 
         # Show the results page and the Activity Tracker button
         self.stacked_widget.addWidget(self.results_page)
@@ -250,12 +263,28 @@ class PersonalityQuiz(QWidget):
         button_layout = QHBoxLayout()
         button_layout.addStretch(2)
 
-        home_button = QPushButton('Home')
-        home_button.setObjectName('homeButton')
-        home_button.clicked.connect(self.go_home)
-        button_layout.addWidget(home_button)
+        self.home_button = QPushButton('Home')
+        self.home_button.setObjectName('homeButton')
+        self.home_button.clicked.connect(self.go_home)
+        button_layout.addWidget(self.home_button)
+
+        self.go_back_button = QPushButton("Back")
+        self.go_back_button.clicked.connect(self.go_back)
+        button_layout.addWidget(self.go_back_button)
+        self.go_back_button.hide()
 
         return button_layout
+    
+    def go_back(self):
+        '''
+        Go back button
+        
+        '''
+        current_index = self.stacked_widget.currentIndex()
+        if current_index > 0:
+            self.stacked_widget.setCurrentIndex(current_index - 1)
+        if self.stacked_widget.currentIndex() == 0:
+            self.go_back_button.hide()
 
 
 if __name__ == '__main__':

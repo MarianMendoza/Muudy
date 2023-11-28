@@ -33,7 +33,8 @@ class ActivityTracker(QWidget):
         super().__init__()
 
         self.selected_activities = set()
-        self.mood = "Test"
+        self.mood = None
+        self.personality = None
         # self.mood = None
 
         self.muudy_window = muudy_window
@@ -199,7 +200,7 @@ class ActivityTracker(QWidget):
         Show the results.
         '''
 
-        if self.mood == None:
+        if self.personality == None:
 
             self.stacked_widget.addWidget(self.results_widget)
             self.stacked_widget.setCurrentWidget(self.results_widget)
@@ -281,11 +282,11 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
         # Apply the external stylesheet
-    # style_file = QFile('templates/styles.css')
-    # if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
-    #     stream = QTextStream(style_file)
-    #     app.setStyleSheet(stream.readAll())
-    #     style_file.close()
+    style_file = QFile('templates/styles.css')
+    if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
+        stream = QTextStream(style_file)
+        app.setStyleSheet(stream.readAll())
+        style_file.close()
 
     muudy_window = MuudyWindow()
     # muudy_window.show()
