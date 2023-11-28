@@ -1,10 +1,3 @@
-'''
-
-Marian Angeles Mendoza
-
-
-
-'''
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QGroupBox, QCheckBox, QPushButton, QLabel, QRadioButton, QFormLayout, QStackedWidget, QHBoxLayout
 from PyQt6.QtCore import QFile, QTextStream
@@ -255,32 +248,32 @@ class ActivityTracker(QWidget):
             if self.mood == "Sad":
             # Check if the person is a Diplomat
                 if self.personality == "Diplomat":
-                    self.result_np = "You are feeling exhausted today. Diplomats often invest a lot of emotional energy in understanding and mediating others' conflicts."
+                    self.result_np = "You are feeling exhausted today. Diplomats often invest a lot of emotional energy in understanding and mediating others' conflicts. Maybe focus more on your social life"
                 # Check if the person is a Sentinel
                 elif self.personality == "Sentinel":
-                    self.result_np = "You feel overwhelmed today. Sentinels may feel stressed when faced with disruptions to their planned and organized routines."
+                    self.result_np = "You feel overwhelmed today. Sentinels may feel stressed when faced with disruptions to their planned and organized routines. Maybe focus more on your organization"
                 # Check if the person is an Analyst
                 elif self.personality == "Analyst":
-                    self.result_np = "You may be mentally drained today. Analysts tend to spend a lot of time thinking deeply and analyzing complex information."
+                    self.result_np = "You may be mentally drained today. Analysts tend to spend a lot of time thinking deeply and analyzing complex information. Maybe focus more on self care"
                 # Check if the person is an Explorer
                 elif self.personality == "Explorer":
-                    self.result_np = "You might be feeling a bit scattered today. Explorers often enjoy spontaneity, but too much can lead to a sense of chaos."
+                    self.result_np = "You might be feeling a bit scattered today. Explorers often enjoy spontaneity, but too much can lead to a sense of chaos. Maybe focus more on your hobbies"
                 else:
                     print("Error")
                     pass
 
             elif self.mood == "Happy":
                 if self.personality == "Diplomat":
-                    self.result_np = "You feel joyful today! Diplomats are likely celebrating the positive connections and resolutions they've achieved."
+                    self.result_np = "You feel joyful today! Diplomats are likely celebrating the positive connections and resolutions they've achieved. Keep up the good work and stay social!"
                 # Check if the person is a Sentinel
                 elif self.personality == "Sentinel":
-                    self.result_np = "You feel content and satisfied today. Sentinels appreciate stability and order, and your organized approach may have contributed to your happiness."
+                    self.result_np = "You feel content and satisfied today. Sentinels appreciate stability and order, and your organized approach may have contributed to your happiness.Keep up the good work and stay organized"
                 # Check if the person is an Analyst
                 elif self.personality == "Analyst":
-                    self.result_np = "You are intellectually fulfilled today. Analysts find happiness in solving complex problems and gaining new knowledge."
+                    self.result_np = "You are intellectually fulfilled today. Analysts find happiness in solving complex problems and gaining new knowledge. Keep up the good work and focus on self care"
                 # Check if the person is an Explorer
                 elif self.personality == "Explorer":
-                    self.result_np = "You feel excited and fulfilled today. Explorers thrive on new experiences, and your adventurous spirit may be the source of your happiness."
+                    self.result_np = "You feel excited and fulfilled today. Explorers thrive on new experiences, and your adventurous spirit may be the source of your happiness. Keep up the good work and focus on your hobbies"
                 else:
                     print("Error")
                     pass
