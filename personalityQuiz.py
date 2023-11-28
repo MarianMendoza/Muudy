@@ -25,7 +25,7 @@ class PersonalityQuiz(QWidget):
         # Initialize the activity tracker
         self.activity_tracker = ActivityTracker(muudy_window, from_personality=True)
 
-
+        
 
         # Descriptions of different personality types
         self.descriptions = {
@@ -201,7 +201,7 @@ class PersonalityQuiz(QWidget):
         - None
         """
         # Collect happiness values from the questionnaire
-
+        x = "answered"
         for i in range(self.stacked_widget.count()):
             page = self.stacked_widget.widget(i)
             for j in range(page.layout().count()):
@@ -214,10 +214,8 @@ class PersonalityQuiz(QWidget):
             self.result_label.setText("This site may not be for you. You don't seem to fit into any of our categories.\n"
                                       "If you'd like to carry on to our activity tracker, feel free, but it may be inaccurate.")
             self.personality_type = ""
-            self.stacked_widget.addWidget(self.results_page)
-            self.stacked_widget.setCurrentWidget(self.results_page)
-            return
-
+            x = "unanswered"
+    
         # Check if all prompts have the highest value
         if all(score == 10 for score in self.happiness_values):
             self.result_label.setText("You have a consistently positive and enthusiastic approach to all aspects of life! "
@@ -236,20 +234,11 @@ class PersonalityQuiz(QWidget):
             max_category = max(category_scores, key=lambda k: (category_scores[k], max_question_scores[k]))
             self.personality_type = self.personality_types[max_category]
 
-            # Check if there are two categories with the same scores and the same max question scores
-            equal_categories = [self.personality_types[cat] for cat, score in category_scores.items() if
-                                score == category_scores[max_category] and max_question_scores[cat] == max_question_scores[max_category]]
-
-            if len(equal_categories) == 2:
-                self.personality_type = f'{equal_categories[0]} and {equal_categories[1]}'
-                descriptions = [self.descriptions[self.personality_type] for personality_type in equal_categories]
-                description = f'You are a {self.personality_type}!\n\nDescriptions:\n\n1. {descriptions[0]}\n\n2. {descriptions[1]} \n\n Feel free to identify with whichever you prefer! You deserve it'
-
-            else:
+            if x == "answered":
                 description = f'You are a {self.personality_type}! \n {self.descriptions[self.personality_type]}'
+            else:
+                description = "This site may not be for you. You don't seem to fit into any of our categories"
 
-
-            print(self.personality_type)
 
             self.result_label.setText(description)
             self.result_label.setWordWrap(True)
