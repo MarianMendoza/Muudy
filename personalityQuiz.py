@@ -25,7 +25,7 @@ class PersonalityQuiz(QWidget):
         # Initialize the activity tracker
         self.activity_tracker = ActivityTracker(muudy_window, from_personality=True)
 
-        
+
 
         # Descriptions of different personality types
         self.descriptions = {

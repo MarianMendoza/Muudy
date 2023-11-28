@@ -37,8 +37,8 @@ class ActivityTracker(QWidget):
         self.mood = None
         # self.mood = None
 
-        self.personality_type = None
-        # print("AT:",self.personality_type)
+        self.personality = None
+        # print("AT:",self.personality)
 
         self.muudy_window = muudy_window
 
@@ -123,6 +123,9 @@ class ActivityTracker(QWidget):
 
         main_layout.addWidget(self.stacked_widget)
 
+    def go_back_to_personality(self):
+        self.muudy_window.stacked_widget.setCurrentIndex(1)
+
     def create_category_group_box(self, category, activities):
         """
         Create a group box for a category with checkboxes for each activity.
@@ -202,6 +205,7 @@ class ActivityTracker(QWidget):
         '''
         Show the results.
         '''
+        # print(self.personality)
 
         if self.personality == None:
 
@@ -244,19 +248,68 @@ class ActivityTracker(QWidget):
             self.max_points_result_label = QLabel(self.result_np)
             self.max_points_result_label.setWordWrap(True)  # Enable word wrap
             self.results_layout.addWidget(self.max_points_result_label)
-        else:
+
+        elif self.personality != None:
+            self.stacked_widget.addWidget(self.results_widget)
+            self.stacked_widget.setCurrentWidget(self.results_widget)
             if self.mood == "Sad":
-                pass
-            
+            # Check if the person is a Diplomat
+                if self.personality == "Diplomat":
+                    self.result_np = "You are feeling exhausted today. Diplomats often invest a lot of emotional energy in understanding and mediating others' conflicts."
+                # Check if the person is a Sentinel
+                elif self.personality == "Sentinel":
+                    self.result_np = "You feel overwhelmed today. Sentinels may feel stressed when faced with disruptions to their planned and organized routines."
+                # Check if the person is an Analyst
+                elif self.personality == "Analyst":
+                    self.result_np = "You may be mentally drained today. Analysts tend to spend a lot of time thinking deeply and analyzing complex information."
+                # Check if the person is an Explorer
+                elif self.personality == "Explorer":
+                    self.result_np = "You might be feeling a bit scattered today. Explorers often enjoy spontaneity, but too much can lead to a sense of chaos."
+                else:
+                    print("Error")
+                    pass
+
             elif self.mood == "Happy":
-                pass
+                if self.personality == "Diplomat":
+                    self.result_np = "You feel joyful today! Diplomats are likely celebrating the positive connections and resolutions they've achieved."
+                # Check if the person is a Sentinel
+                elif self.personality == "Sentinel":
+                    self.result_np = "You feel content and satisfied today. Sentinels appreciate stability and order, and your organized approach may have contributed to your happiness."
+                # Check if the person is an Analyst
+                elif self.personality == "Analyst":
+                    self.result_np = "You are intellectually fulfilled today. Analysts find happiness in solving complex problems and gaining new knowledge."
+                # Check if the person is an Explorer
+                elif self.personality == "Explorer":
+                    self.result_np = "You feel excited and fulfilled today. Explorers thrive on new experiences, and your adventurous spirit may be the source of your happiness."
+                else:
+                    print("Error")
+                    pass
+            
+            elif self.mood == "Neutral":
+                if self.personality == "Diplomat":
+                    self.result_np = "You are feeling calm and balanced today. Diplomats often maintain a sense of harmony and balance even in neutral situations."
+                # Check if the person is a Sentinel
+                elif self.personality == "Sentinel":
+                    self.result_np = "You are in a state of calm today. Sentinels appreciate stability and order, and your organized approach may contribute to your sense of calm."
+                # Check if the person is an Analyst
+                elif self.personality == "Analyst":
+                    self.result_np = "You are in a reflective state today. Analysts often enjoy contemplative moments to think deeply and analyze information."
+                # Check if the person is an Explorer
+                elif self.personality == "Explorer":
+                    self.result_np = "You are in a state of openness today. Explorers thrive on new experiences, and your neutral mood may be a result of your adaptable and open-minded nature."
+                else:
+                    print("Error")
 
-            else:
-                print("I have a personality.")
-            pass
+            self.points_result_label = QLabel(self.result_np)
+            self.points_result_label.setWordWrap(True)  # Enable word wrap
+            self.results_layout.addWidget(self.points_result_label)
 
-    
+            # self.results_layout.addWidget(self.max_points_result_label)
+            # else:
+            #     print("Other Else")
+            #     pass
 
+            
     def get_selected_mood(self):
         '''
         Get selected Mood
