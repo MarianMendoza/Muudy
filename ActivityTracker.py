@@ -206,14 +206,7 @@ class ActivityTracker(QWidget):
         self.max_points_result_label.setWordWrap(True)  # Enable word wrap
         self.results_layout.addWidget(self.max_points_result_label)
 
-    def show_admin_feature(self):
-        self.setWindowTitle('Admin')
-        self.admin_popup = QWidget()
-        self.admin_popup.setGeometry(700, 100, 300, 200)
-        admin_layout = QVBoxLayout(self.admin_popup)
-        admin_label = QLabel("Admin Feature not available.")
-        admin_layout.addWidget(admin_label)
-        self.admin_popup.show()
+    
 
     def get_selected_mood(self):
         for button in self.mood_radio_buttons:
@@ -236,7 +229,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
         # Apply the external stylesheet
-    # style_file = QFile('styles.css')
+    # style_file = QFile('templates/styles.css')
     # if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
     #     stream = QTextStream(style_file)
     #     app.setStyleSheet(stream.readAll())

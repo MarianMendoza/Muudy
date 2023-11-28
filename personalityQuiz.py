@@ -2,6 +2,7 @@ import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QSlider, QLabel, QPushButton, QStackedWidget, QHBoxLayout
 from PyQt6.QtCore import Qt
 from Main import MuudyWindow
+from activityTracker import ActivityTracker
 
 class PersonalityQuiz(QWidget):
     
@@ -17,6 +18,8 @@ class PersonalityQuiz(QWidget):
             'Self-care': 'Analyst',
             'Organization': 'Sentinel'
         }
+
+        self.activity_tracker = ActivityTracker(self)
 
         self.descriptions = {
             'Diplomat': "Diplomats are empathetic mediators, driven by ideals and harmony. They excel in understanding emotions, fostering connections, and navigating conflicts with grace.",
@@ -89,10 +92,16 @@ class PersonalityQuiz(QWidget):
             self.next_button.setVisible(False)
         self.next_button.clicked.connect(self.next_category)
 
+         # Create a button for navigating to the Activity Tracker
+        self.at_button = QPushButton('Go to Activity Tracker')
+        self.at_button.setObjectName('atButton')
+        self.at_button.clicked.connect(self.show_activity_tracker)
+
         self.results_page = QWidget(self)
         results_layout = QVBoxLayout(self.results_page)
         results_layout.addWidget(self.result_label)
         results_layout.addWidget(self.next_button)
+        results_layout.addWidget(self.at_button)
 
         self.setLayout(layout)
         self.setFixedSize(600, 400)
@@ -120,6 +129,31 @@ class PersonalityQuiz(QWidget):
         self.muudy_window.member_button.show()
         self.muudy_window.guests_button.show()
         self.muudy_window.stacked_widget.setCurrentIndex(0)
+
+    def show_activity_tracker(self):
+        """
+        Switch to the Activity Tracker page within the PersonalityQuiz widget.
+
+
+        This method hides the results page, hides the 'Next' button,
+        sets the current index of the stacked widget to the Activity Tracker page,
+        and applies the stylesheet for the Activity Tracker.
+        """
+        # Get the index of the Activity Tracker page in the stacked widget
+        activity_tracker_index = self.stacked_widget.indexOf(self.activity_tracker)
+
+
+        # Hide the results page and 'Next' button
+        self.results_page.hide()
+        self.next_button.hide()
+
+
+        # Set the current index to the Activity Tracker page
+        self.stacked_widget.setCurrentIndex(activity_tracker_index)
+
+
+        # Apply the stylesheet for the Activity Tracker
+        # self.activity_tracker.apply_stylesheet()
 
     def show_results(self):
         for i in range(self.stacked_widget.count()):
@@ -190,7 +224,7 @@ if __name__ == '__main__':
     
     app = QApplication(sys.argv)
 
-    # style_file = QFile('styles.css')
+    # style_file = QFile('templates/styles.css')
     # if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
     #     stream = QTextStream(style_file)
     #     app.setStyleSheet(stream.readAll())

@@ -32,6 +32,7 @@ class MuudyWindow(QWidget):
 
         self.admin_button = QPushButton('Admin')
         self.admin_button.setObjectName('adminButton')
+        self.admin_button.clicked.connect(self.show_admin_feature)
 
         self.member_button = QPushButton('Member')
         self.member_button.setObjectName('memberButton')
@@ -57,7 +58,7 @@ class MuudyWindow(QWidget):
         self.main_layout.addWidget(self.stacked_widget)
         self.main_layout.addLayout(self.buttons_layout)
 
-        # style_file = QFile('styles.css')
+        # style_file = QFile('templates/styles.css')
         # if style_file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text):
         #     stream = QTextStream(style_file)
         #     self.setStyleSheet(stream.readAll())
@@ -75,6 +76,15 @@ class MuudyWindow(QWidget):
         self.member_button.hide()
         self.guests_button.hide()
         self.stacked_widget.setCurrentIndex(2)
+
+    def show_admin_feature(self):
+        self.setWindowTitle('Admin')
+        self.admin_popup = QWidget()
+        self.admin_popup.setGeometry(700, 100, 300, 200)
+        admin_layout = QVBoxLayout(self.admin_popup)
+        admin_label = QLabel("Admin Feature not available.")
+        admin_layout.addWidget(admin_label)
+        self.admin_popup.show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
