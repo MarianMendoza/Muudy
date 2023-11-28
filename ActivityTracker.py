@@ -23,7 +23,7 @@ class ActivityTracker(QWidget):
 
 
     
-    def __init__(self,muudy_window):
+    def __init__(self,muudy_window,from_personality = False):
         '''
         Initializes the activity window
 
@@ -31,11 +31,14 @@ class ActivityTracker(QWidget):
         
         '''
         super().__init__()
+        self.from_personality = from_personality
 
         self.selected_activities = set()
         self.mood = None
-        self.personality = None
         # self.mood = None
+
+        self.personality_type = None
+        # print("AT:",self.personality_type)
 
         self.muudy_window = muudy_window
 
@@ -242,7 +245,14 @@ class ActivityTracker(QWidget):
             self.max_points_result_label.setWordWrap(True)  # Enable word wrap
             self.results_layout.addWidget(self.max_points_result_label)
         else:
-            print("I have a personality.")
+            if self.mood == "Sad":
+                pass
+            
+            elif self.mood == "Happy":
+                pass
+
+            else:
+                print("I have a personality.")
             pass
 
     

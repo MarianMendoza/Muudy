@@ -23,7 +23,9 @@ class PersonalityQuiz(QWidget):
         }
 
         # Initialize the activity tracker
-        self.activity_tracker = ActivityTracker(self)
+        self.activity_tracker = ActivityTracker(muudy_window, from_personality=True)
+
+        
 
         # Descriptions of different personality types
         self.descriptions = {
@@ -180,6 +182,8 @@ class PersonalityQuiz(QWidget):
         # Get the index of the Activity Tracker page in the stacked widget
 
         activity_tracker_index = self.stacked_widget.indexOf(self.activity_tracker)
+        self.activity_tracker.personality = self.personality_type
+        # print("PT:" , self.personality_type)
 
         # Hide the results page and 'Next' button
         self.results_page.hide()
@@ -197,6 +201,7 @@ class PersonalityQuiz(QWidget):
         - None
         """
         # Collect happiness values from the questionnaire
+
         for i in range(self.stacked_widget.count()):
             page = self.stacked_widget.widget(i)
             for j in range(page.layout().count()):
@@ -208,7 +213,7 @@ class PersonalityQuiz(QWidget):
         if all(score == 1 for score in self.happiness_values):
             self.result_label.setText("This site may not be for you. You don't seem to fit into any of our categories.\n"
                                       "If you'd like to carry on to our activity tracker, feel free, but it may be inaccurate.")
-            personality_type = ""
+            self.personality_type = ""
             self.stacked_widget.addWidget(self.results_page)
             self.stacked_widget.setCurrentWidget(self.results_page)
             return
@@ -218,7 +223,7 @@ class PersonalityQuiz(QWidget):
             self.result_label.setText("You have a consistently positive and enthusiastic approach to all aspects of life! "
                                       "You find maximum happiness in every category. \n If you'd like to be more specific "
                                       "\nfeel free to take the test again...")
-            personality_type = ''
+            self.personality_type = ''
         else:
             # Calculate scores for each category and identify the personality type
             category_scores = {}
@@ -229,20 +234,22 @@ class PersonalityQuiz(QWidget):
                 max_question_scores[category] = max(self.happiness_values[i * 5: (i + 1) * 5])
 
             max_category = max(category_scores, key=lambda k: (category_scores[k], max_question_scores[k]))
-            personality_type = self.personality_types[max_category]
+            self.personality_type = self.personality_types[max_category]
 
             # Check if there are two categories with the same scores and the same max question scores
             equal_categories = [self.personality_types[cat] for cat, score in category_scores.items() if
                                 score == category_scores[max_category] and max_question_scores[cat] == max_question_scores[max_category]]
 
             if len(equal_categories) == 2:
-                personality_type = f'{equal_categories[0]} and {equal_categories[1]}'
-                descriptions = [self.descriptions[personality_type] for personality_type in equal_categories]
-                description = f'You are a {personality_type}!\n\nDescriptions:\n\n1. {descriptions[0]}\n\n2. {descriptions[1]} \n\n Feel free to identify with whichever you prefer! You deserve it'
+                self.personality_type = f'{equal_categories[0]} and {equal_categories[1]}'
+                descriptions = [self.descriptions[self.personality_type] for personality_type in equal_categories]
+                description = f'You are a {self.personality_type}!\n\nDescriptions:\n\n1. {descriptions[0]}\n\n2. {descriptions[1]} \n\n Feel free to identify with whichever you prefer! You deserve it'
 
             else:
-                description = f'You are a {personality_type}! \n {self.descriptions[personality_type]}'
+                description = f'You are a {self.personality_type}! \n {self.descriptions[self.personality_type]}'
 
+
+            print(self.personality_type)
 
             self.result_label.setText(description)
             self.result_label.setWordWrap(True)
@@ -268,24 +275,8 @@ class PersonalityQuiz(QWidget):
         self.home_button.clicked.connect(self.go_home)
         button_layout.addWidget(self.home_button)
 
-        self.go_back_button = QPushButton("Back")
-        self.go_back_button.clicked.connect(self.go_back)
-        button_layout.addWidget(self.go_back_button)
-        self.go_back_button.hide()
-
         return button_layout
     
-    def go_back(self):
-        '''
-        Go back button
-        
-        '''
-        current_index = self.stacked_widget.currentIndex()
-        if current_index > 0:
-            self.stacked_widget.setCurrentIndex(current_index - 1)
-        if self.stacked_widget.currentIndex() == 0:
-            self.go_back_button.hide()
-
 
 if __name__ == '__main__':
     

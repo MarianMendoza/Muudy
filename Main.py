@@ -21,9 +21,12 @@ class MuudyWindow(QWidget):
         '''
         super().__init__()
 
+        self.personality = None
+        # print("Main", self.personality)
+
+        
 
         from activityTracker import ActivityTracker
-
         self.activity_tracker = ActivityTracker(self)  
 
         from personalityQuiz import PersonalityQuiz
@@ -43,6 +46,7 @@ class MuudyWindow(QWidget):
         '''
         self.setWindowTitle('Muudy Window')
         self.setGeometry(100, 100, 700, 300)
+
 
 
         self.main_label = QLabel('Muudy')
