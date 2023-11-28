@@ -2,16 +2,30 @@ import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QStackedWidget
 from PyQt6.QtCore import QFile, QTextStream, Qt
 
+
+
 class MuudyWindow(QWidget):
+    '''
+    This is the main window, this window is used to open the Muudy application.
+
+    This allows us to navigate between Activity Tracker and Personality Quiz.
+
+
+    '''
     def __init__(self):
+        '''
+        Initialize the Muudy Windows.
+
+        Creates and instance of the activity tracker and personality quiz, aswell as admin features.
+        
+        '''
         super().__init__()
 
 
         from activityTracker import ActivityTracker
 
-        self.activity_tracker = ActivityTracker(self)  # Create an instance of ActivityTracker
+        self.activity_tracker = ActivityTracker(self)  
 
-        #here needs to be changed.
         from personalityQuiz import PersonalityQuiz
         social_questions = ["Going out for food/drinks with friends", "Meeting up with somebody you know and going for a walk", "Being invited to a party", "Playing video games or watching a movie one-on-one with somebody", "Being kept up to date with the latest gossip"]
         hobby_questions = ["Engaging in a physical activity or sport for recreation", "Creating art, whether it's painting, drawing, or any other form", "Attending a live performance or event related to a personal interest", "Spending a quiet day immersed in a favorite book or series", "Exploring a new hobby or activity for the first time"]
@@ -23,6 +37,10 @@ class MuudyWindow(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        '''
+        Sets up buttons
+        
+        '''
         self.setWindowTitle('Muudy Window')
         self.setGeometry(100, 100, 700, 300)
 
@@ -65,19 +83,32 @@ class MuudyWindow(QWidget):
         #     style_file.close()
 
     def show_activity_tracker(self):
-        # Switch to the ActivityTracker widget
+        '''
+        Switch to activity tracker
+        
+        '''
         self.admin_button.hide()
         self.member_button.hide()
         self.guests_button.hide()
         self.stacked_widget.setCurrentIndex(1)
 
     def show_personality_quiz(self):
+
+        '''
+        Switch the personality quiz
+        
+        '''
         self.admin_button.hide()
         self.member_button.hide()
         self.guests_button.hide()
         self.stacked_widget.setCurrentIndex(2)
 
     def show_admin_feature(self):
+
+        '''
+        Show admin Feature
+        
+        '''
         self.setWindowTitle('Admin')
         self.admin_popup = QWidget()
         self.admin_popup.setGeometry(700, 100, 300, 200)

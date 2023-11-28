@@ -33,7 +33,9 @@ class ActivityTracker(QWidget):
         super().__init__()
 
         self.selected_activities = set()
-        self.mood = None
+        self.mood = "Test"
+        # self.mood = None
+
         self.muudy_window = muudy_window
 
         self.init_ui()
@@ -50,10 +52,10 @@ class ActivityTracker(QWidget):
         button_layout.addStretch(1)
 
 
-
-        go_back_button = QPushButton("Back")
-        go_back_button.clicked.connect(self.go_back)
-        button_layout.addWidget(go_back_button)
+        self.go_back_button = QPushButton("Back")
+        self.go_back_button.clicked.connect(self.go_back)
+        button_layout.addWidget(self.go_back_button)
+        self.go_back_button.hide()
 
         main_layout = QVBoxLayout(self)
         main_layout.addLayout(button_layout)
@@ -93,7 +95,7 @@ class ActivityTracker(QWidget):
         self.self_care_group_box = self.create_category_group_box('Self-care', ['Meditate', 'Yoga', 'Tidy Safe Space'])
 
         show_activities_button = QPushButton('Select Activities')
-        show_activities_button.clicked.connect(self.show_results_no_personality)
+        show_activities_button.clicked.connect(self.show_results)
 
         self.activity_layout.addWidget(self.social_group_box)
         self.activity_layout.addWidget(self.hobbies_group_box)
@@ -107,6 +109,13 @@ class ActivityTracker(QWidget):
 
         self.results_widget = QWidget()
         self.results_layout = QVBoxLayout(self.results_widget)
+
+        # self.go_back_button = QPushButton("Back")
+        if self.stacked_widget.currentIndex() == 0:
+            self.go_back_button.setVisible(False)
+        # self.go_back_button.clicked.connect(self.go_back)
+
+        
 
         main_layout.addWidget(self.stacked_widget)
 
@@ -142,6 +151,8 @@ class ActivityTracker(QWidget):
         current_index = self.stacked_widget.currentIndex()
         if current_index > 0:
             self.stacked_widget.setCurrentIndex(current_index - 1)
+        if self.stacked_widget.currentIndex() == 0:
+            self.go_back_button.hide()
 
     def go_home(self):
         '''
@@ -183,49 +194,55 @@ class ActivityTracker(QWidget):
         else:
             self.selected_activities.discard(activity)
 
-    def show_results_no_personality(self):
+    def show_results(self):
         '''
         Show the results.
         '''
-        self.stacked_widget.addWidget(self.results_widget)
-        self.stacked_widget.setCurrentWidget(self.results_widget)
 
-        self.no_personality_result_label = QLabel(f'You have chosen, {self.mood}.\nBased on our Muudy predictions.')
+        if self.mood == None:
 
-        self.clear_layout(self.results_layout)
+            self.stacked_widget.addWidget(self.results_widget)
+            self.stacked_widget.setCurrentWidget(self.results_widget)
 
-        if not self.selected_activities:
-            self.no_personality_result_label.setText("You have not chosen any activities. Please choose some for analysis.")
+            self.no_personality_result_label = QLabel(f'You have chosen, {self.mood}.\nBased on our Muudy predictions.')
+
+            self.clear_layout(self.results_layout)
+
+            if not self.selected_activities:
+                self.no_personality_result_label.setText("You have not chosen any activities. Please choose some for analysis.")
+                self.results_layout.addWidget(self.no_personality_result_label)
+                return
+
             self.results_layout.addWidget(self.no_personality_result_label)
-            return
 
-        self.results_layout.addWidget(self.no_personality_result_label)
+            self.no_personality_result_from_max = {
+                "Social": "You Might be a Diplomat!\nDiplomats are empathetic mediators, driven by ideals and harmony. They excel in understanding emotions, fostering connections, and navigating conflicts with grace.",
+                "Hobbies": "You might be an Explorer!\nExplorers are adventurous creators, embracing spontaneity and excitement. They live in the present, adapting to change effortlessly, and are resourceful problem solvers with a zest for new experiences.",
+                "Organizational": "You might be an Analyst!\nAnalysts are analytical thinkers, valuing logic and innovation. Their precision and intellectual curiosity drive them to seek knowledge, solve complex problems, and push boundaries.",
+                "Self-Care": "You might be a Sentinels!\nSentinels are practical organizers, prioritizing stability and order. They thrive on responsibility, reliability, and attention to detail, ensuring efficiency and a secure environment."
+            }
+            self.personalities = {"Social": "Diplomat", "Hobbies": "Explorer", "Organizational": "Analyst", "Self-Care": "Sentinel"}
 
-        self.no_personality_result_from_max = {
-            "Social": "You Might be a Diplomat!\nDiplomats are empathetic mediators, driven by ideals and harmony. They excel in understanding emotions, fostering connections, and navigating conflicts with grace.",
-            "Hobbies": "You might be an Explorer!\nExplorers are adventurous creators, embracing spontaneity and excitement. They live in the present, adapting to change effortlessly, and are resourceful problem solvers with a zest for new experiences.",
-            "Organizational": "You might be an Analyst!\nAnalysts are analytical thinkers, valuing logic and innovation. Their precision and intellectual curiosity drive them to seek knowledge, solve complex problems, and push boundaries.",
-            "Self-Care": "You might be a Sentinels!\nSentinels are practical organizers, prioritizing stability and order. They thrive on responsibility, reliability, and attention to detail, ensuring efficiency and a secure environment."
-        }
-        self.personalities = {"Social": "Diplomat", "Hobbies": "Explorer", "Organizational": "Analyst", "Self-Care": "Sentinel"}
+            self.max_key = max(self.point_dict, key=self.point_dict.get)
+            if all(value == self.point_dict[self.max_key] for value in self.point_dict.values()):
+                self.no_personality_result_label.setText("You've done a lot! Consider taking the Muudy Personality test for a more detailed analysis.")
+                # self.results_layout.addWidget(self.no_personality_result_label)
 
-        self.max_key = max(self.point_dict, key=self.point_dict.get)
-        if all(value == self.point_dict[self.max_key] for value in self.point_dict.values()):
-            self.no_personality_result_label.setText("You've done a lot! Consider taking the Muudy Personality test for a more detailed analysis.")
-            # self.results_layout.addWidget(self.no_personality_result_label)
+            if self.mood == "Sad":
+                excluded_keys = [key for key in self.personalities.keys() if key != self.max_key]
+                self.result_np = "You might be a " + ", ".join([self.personalities[key].split('!')[0] for key in excluded_keys])
+                self.result_np += ". Take a Muudy personality test to delve deeper."
+            elif self.mood == "Neutral":
+                self.result_np = "Try taking the personality test for a further analysis."
+            else:
+                self.result_np = self.no_personality_result_from_max[self.max_key]
 
-        if self.mood == "Sad":
-            excluded_keys = [key for key in self.personalities.keys() if key != self.max_key]
-            self.result_np = "You might be a " + ", ".join([self.personalities[key].split('!')[0] for key in excluded_keys])
-            self.result_np += ". Take a Muudy personality test to delve deeper."
-        elif self.mood == "Neutral":
-            self.result_np = "Try taking the personality test for a further analysis."
+            self.max_points_result_label = QLabel(self.result_np)
+            self.max_points_result_label.setWordWrap(True)  # Enable word wrap
+            self.results_layout.addWidget(self.max_points_result_label)
         else:
-            self.result_np = self.no_personality_result_from_max[self.max_key]
-
-        self.max_points_result_label = QLabel(self.result_np)
-        self.max_points_result_label.setWordWrap(True)  # Enable word wrap
-        self.results_layout.addWidget(self.max_points_result_label)
+            print("I have a personality.")
+            pass
 
     
 
@@ -234,12 +251,15 @@ class ActivityTracker(QWidget):
         Get selected Mood
         
         '''
+
         for button in self.mood_radio_buttons:
             if button.isChecked():
                 self.mood = button.text()
 
                 # Switch to the activity tracker layout
                 self.stacked_widget.setCurrentIndex(1)
+                self.go_back_button.show()
+
                 return
 
     def clear_layout(self, layout):

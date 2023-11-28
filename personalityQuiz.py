@@ -231,7 +231,7 @@ if __name__ == '__main__':
     #     style_file.close()
 
     muudy_window = MuudyWindow()
-    muudy_window.show()
+    # muudy_window.show()
 
 
     sys.exit(app.exec())
