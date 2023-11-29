@@ -1,7 +1,8 @@
+import sys
 import pytest
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QGroupBox, QCheckBox
 from unittest.mock import MagicMock  # Import MagicMock for creating a mock object
-from a import ActivityTracker
+from activityTracker import ActivityTracker
  
 @pytest.fixture
 def app():
@@ -33,3 +34,25 @@ def test_get_selected_mood(app):
 
     # Check if the stacked widget index is changed
     assert activity_tracker.stacked_widget.currentIndex() == 1
+
+
+def test_max_daily_activities():
+    app = QApplication(sys.argv)
+    activity_tracker = ActivityTracker(None)  # Pass appropriate muudy_window object or set it to None if not needed
+
+    max_activities = 3
+
+    # Iterate through the categories and check the number of activities
+    for category_layout in activity_tracker.activity_layout.children():
+        if isinstance(category_layout, QGroupBox):  # Assuming the categories are QGroupBox
+            category_name = category_layout.title()
+
+            # Count the number of activities in the category
+            activities_count = sum(isinstance(widget, QCheckBox) for widget in category_layout.children())
+
+            assert activities_count <= max_activities, f"Too many activities in the {category_name} category."
+
+    app.quit()
+
+if __name__ == '__main__':
+    test_max_daily_activities()
