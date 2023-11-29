@@ -1,7 +1,8 @@
 import sys
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication,QSlider
 from personalityQuiz import PersonalityQuiz  
 from Main import MuudyWindow
+import unittest
 
 def test_category_with_highest_points_displays_correct_result():
     # Create the QApplication instance
@@ -26,4 +27,28 @@ def test_category_with_highest_points_displays_correct_result():
 
     # Clean up
     app.quit()
+
+
+class TestSliderValidity(unittest.TestCase):
+
+    def setUp(self):
+        self.app = QApplication(sys.argv)
+        self.quiz = PersonalityQuiz([], [], [], [], None)  # Pass appropriate question lists and muudy_window object
+
+    def test_slider_validity(self):
+        for i in range(self.quiz.stacked_widget.count()):
+            page = self.quiz.stacked_widget.widget(i)
+            for j in range(page.layout().count()):
+                item = page.layout().itemAt(j)
+                if isinstance(item.widget(), QSlider):
+                    slider_value = item.widget().value()
+                    self.assertTrue(1 <= slider_value <= 10, f"Slider value {slider_value} is not valid.")
+
+    def tearDown(self):
+        del self.quiz
+        self.app.quit()
+
+if __name__ == '__main__':
+    unittest.main()
+
 
